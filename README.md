@@ -27,23 +27,38 @@ Transcription factors like NF-κB bind DNA at conserved sequence motifs. To quan
 
 ## Results
 
-Using the **real NF-κB dataset** (12 sequences, length 10):
+Using the **real NF-κB dataset** (12 sequences, length 10), we quantified motif conservation using entropy and information content:
 
 - **Total entropy**: ~11.86 bits  
 - **Total information**: ~8.14 bits  
 - **Conserved positions** (1–3, 8–10) show low entropy (~1.0) and high information (~1.0).  
 - **Variable positions** (4–7) have higher entropy (~1.5–1.6).  
 
-### Example Outputs
+These metrics confirm the expected NF-κB consensus, where the flanking regions are strongly conserved while the central region is more flexible.
+
+---
+
+### Visual Outputs
 
 **Per-column information bar chart**  
+This plot shows the information content (in bits) at each motif position. Peaks correspond to conserved columns, while valleys highlight variable positions.  
+
 ![NF-κB motif information bar](docs/figs/nfkb_info_bar_real.png)
 
+---
+
 **Frequency sequence logo**  
+This logo represents the relative frequency of each nucleotide at every position. Tall letters indicate dominant bases (e.g., G at positions 1–3), while mixed stacks reveal variable sites.  
+
 ![NF-κB motif frequency logo](docs/figs/nfkb_logo_freq_real.png)
 
+---
+
 **Information-weighted sequence logo**  
+This logo scales nucleotide frequencies by information content, making conserved positions appear taller. It emphasizes the GGG start and C/C-rich ending, consistent with NF-κB’s canonical binding motif.  
+
 ![NF-κB motif information-weighted logo](docs/figs/nfkb_logo_info_real.png)
+
 
 ---
 
