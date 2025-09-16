@@ -1,0 +1,547 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "ab0c8830-457a-4c67-a8dc-c8ce80cf30d2",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "ROOT: C:\\Users\\14024\\Documents\\bio-projects\\motif-entropy-nfkb\n",
+      "DATA: C:\\Users\\14024\\Documents\\bio-projects\\motif-entropy-nfkb\\data\n"
+     ]
+    }
+   ],
+   "source": [
+    "from pathlib import Path\n",
+    "import math\n",
+    "from collections import Counter\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "\n",
+    "# Project paths\n",
+    "ROOT = Path.cwd().parents[0]   # notebooks → repo root\n",
+    "DATA = ROOT / \"data\"\n",
+    "SRC = ROOT / \"src\"\n",
+    "\n",
+    "print(\"ROOT:\", ROOT)\n",
+    "print(\"DATA:\", DATA)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "7caebfc8-31b0-4ec5-a620-9120f558532f",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Loaded 12 sequences\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "['GGGAACTTCC', 'GGGGATTTCC', 'GGGAACCTCC']"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "def read_fasta(filepath):\n",
+    "    sequences = []\n",
+    "    with open(filepath) as f:\n",
+    "        seq = \"\"\n",
+    "        for line in f:\n",
+    "            line = line.strip()\n",
+    "            if not line:\n",
+    "                continue\n",
+    "            if line.startswith(\">\"):\n",
+    "                if seq:\n",
+    "                    sequences.append(seq)\n",
+    "                    seq = \"\"\n",
+    "            else:\n",
+    "                seq += line\n",
+    "        if seq:\n",
+    "            sequences.append(seq)\n",
+    "    return sequences\n",
+    "\n",
+    "fasta_path = DATA / \"nfkb_example.fasta\"\n",
+    "seqs = read_fasta(fasta_path)\n",
+    "print(f\"Loaded {len(seqs)} sequences\")\n",
+    "seqs[:3]  # preview first 3 sequences\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9e9cfcbd-a13b-42ff-8399-4d9bf008c853",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "from collections import Counter\n",
+    "import math\n",
+    "\n",
+    "L = len(seqs[0])\n",
+    "alphabet = [\"A\",\"C\",\"G\",\"T\"]\n",
+    "\n",
+    "def column_entropy(col):\n",
+    "    counts = Counter(col)\n",
+    "    total = len(col)\n",
+    "    ent = 0.0\n",
+    "    for c in counts.values():\n",
+    "        p = c/total\n",
+    "        ent -= p*math.log2(p)\n",
+    "    return ent\n",
+    "\n",
+    "rows = []\n",
+    "for i in range(L):\n",
+    "    col = [s[i] for s in seqs]\n",
+    "    counts = Counter(col)\n",
+    "    freqs = {b: counts.get(b,0)/len(seqs) for b in alphabet}\n",
+    "    rows.append({\"position\": i+1, \"H\": column_entropy(col), **freqs})\n",
+    "\n",
+    "df = pd.DataFrame(rows)\n",
+    "df\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3d14047c-43c6-4547-adfe-28f62b367c2e",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "\n",
+    "plt.figure(figsize=(6,3))\n",
+    "plt.bar(df[\"position\"], df[\"H\"])\n",
+    "plt.xlabel(\"Position\")\n",
+    "plt.ylabel(\"Entropy (bits)\")\n",
+    "plt.title(\"NF-κB motif per-column entropy\")\n",
+    "plt.show()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "7aae6b15-88d0-43cd-b053-8ca58561fd46",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "hello\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"hello\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "9a23d55f-afe1-482c-8122-89c97424b3c3",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'seqs' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[31m---------------------------------------------------------------------------\u001b[39m",
+      "\u001b[31mNameError\u001b[39m                                 Traceback (most recent call last)",
+      "\u001b[36mCell\u001b[39m\u001b[36m \u001b[39m\u001b[32mIn[2]\u001b[39m\u001b[32m, line 1\u001b[39m\n\u001b[32m----> \u001b[39m\u001b[32m1\u001b[39m lengths = [\u001b[38;5;28mlen\u001b[39m(s) \u001b[38;5;28;01mfor\u001b[39;00m s \u001b[38;5;129;01min\u001b[39;00m \u001b[43mseqs\u001b[49m]\n\u001b[32m      2\u001b[39m \u001b[38;5;28mprint\u001b[39m(\u001b[33m\"\u001b[39m\u001b[33mSequence lengths:\u001b[39m\u001b[33m\"\u001b[39m, lengths)\n\u001b[32m      3\u001b[39m \u001b[38;5;28mprint\u001b[39m(\u001b[33m\"\u001b[39m\u001b[33mAll equal length?\u001b[39m\u001b[33m\"\u001b[39m, \u001b[38;5;28mlen\u001b[39m(\u001b[38;5;28mset\u001b[39m(lengths)) == \u001b[32m1\u001b[39m)\n",
+      "\u001b[31mNameError\u001b[39m: name 'seqs' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "lengths = [len(s) for s in seqs]\n",
+    "print(\"Sequence lengths:\", lengths)\n",
+    "print(\"All equal length?\", len(set(lengths)) == 1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "838867c8-f04e-4281-9dd5-42db3a828a2d",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Non-ACGT sequences found: 0\n",
+      "Any lowercase sequences? False\n"
+     ]
+    }
+   ],
+   "source": [
+    "valid = set(\"ACGT\")\n",
+    "bad_positions = []\n",
+    "bad_seqs = []\n",
+    "for i, s in enumerate(seqs, start=1):\n",
+    "    if any(ch not in valid for ch in s):\n",
+    "        bad_seqs.append((i, s))\n",
+    "    if s != s.upper():\n",
+    "        bad_positions.append(i)\n",
+    "\n",
+    "print(\"Non-ACGT sequences found:\", len(bad_seqs))\n",
+    "print(\"Any lowercase sequences?\", len(bad_positions) > 0)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "81788d1e-4a29-416b-a3d4-e7c4c2a2a75b",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Total motif entropy: 3.654226493126826\n"
+     ]
+    }
+   ],
+   "source": [
+    "from collections import Counter\n",
+    "import math\n",
+    "\n",
+    "def column_entropy(column):\n",
+    "    counts = Counter(column)\n",
+    "    total = len(column)\n",
+    "    ent = 0.0\n",
+    "    for c in counts.values():\n",
+    "        p = c / total\n",
+    "        ent -= p * math.log2(p)\n",
+    "    return ent\n",
+    "\n",
+    "def motif_entropy(sequences):\n",
+    "    if not sequences:\n",
+    "        return 0.0\n",
+    "    L = len(sequences[0])\n",
+    "    return sum(column_entropy([s[i] for s in sequences]) for i in range(L))\n",
+    "\n",
+    "total_H = motif_entropy(seqs)\n",
+    "print(\"Total motif entropy:\", total_H)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "9dba67fe-122a-4846-8144-0bb00f4d36d5",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>position</th>\n",
+       "      <th>H</th>\n",
+       "      <th>A</th>\n",
+       "      <th>C</th>\n",
+       "      <th>G</th>\n",
+       "      <th>T</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>2</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>3</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>4</td>\n",
+       "      <td>0.979869</td>\n",
+       "      <td>0.583333</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.416667</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>5</td>\n",
+       "      <td>0.413817</td>\n",
+       "      <td>0.916667</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.083333</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>6</td>\n",
+       "      <td>1.280672</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.583333</td>\n",
+       "      <td>0.083333</td>\n",
+       "      <td>0.333333</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>7</td>\n",
+       "      <td>0.979869</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.416667</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.583333</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>7</th>\n",
+       "      <td>8</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>9</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>10</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>1.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   position         H         A         C         G         T\n",
+       "0         1  0.000000  0.000000  0.000000  1.000000  0.000000\n",
+       "1         2  0.000000  0.000000  0.000000  1.000000  0.000000\n",
+       "2         3  0.000000  0.000000  0.000000  1.000000  0.000000\n",
+       "3         4  0.979869  0.583333  0.000000  0.416667  0.000000\n",
+       "4         5  0.413817  0.916667  0.000000  0.083333  0.000000\n",
+       "5         6  1.280672  0.000000  0.583333  0.083333  0.333333\n",
+       "6         7  0.979869  0.000000  0.416667  0.000000  0.583333\n",
+       "7         8  0.000000  0.000000  0.000000  0.000000  1.000000\n",
+       "8         9  0.000000  0.000000  1.000000  0.000000  0.000000\n",
+       "9        10  0.000000  0.000000  1.000000  0.000000  0.000000"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "\n",
+    "L = len(seqs[0])\n",
+    "alphabet = [\"A\", \"C\", \"G\", \"T\"]\n",
+    "\n",
+    "rows = []\n",
+    "for i in range(L):\n",
+    "    col = [s[i] for s in seqs]\n",
+    "    counts = Counter(col)\n",
+    "    freqs = {b: counts.get(b, 0) / len(seqs) for b in alphabet}\n",
+    "    H = column_entropy(col)\n",
+    "    rows.append({\"position\": i+1, \"H\": H, **freqs})\n",
+    "\n",
+    "df = pd.DataFrame(rows)\n",
+    "df\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "0efecbde-e504-46f3-aab9-3c81a1421ad4",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAAAhgAAAE8CAYAAACCUcitAAAAOnRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjEwLjYsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmcvq6yFwwAAAAlwSFlzAAAPYQAAD2EBqD+naQAAMVVJREFUeJzt3Qd4VGX2+PETWgJI7yAdWYJ0WDDLCqKhibhWkKUjuKgUQVGCAtIRBQEJIF1cWKoCCguLSBWUvuJSpGliNBTBAAFCyfyf8/6emf9MMoGZcJMp+X6e55KZO3dm3nkz5J573hZis9lsAgAAYKFsVr4YAACAIsAAAACWI8AAAACWI8AAAACWI8AAAACWI8AAAACWI8AAAACWI8AAAACWI8AAAACWI8AAgtyWLVskJCTE/HT26aefSrVq1SRnzpxSsGBBySoeeeQRswHIWAQY8AsLFiwwJ8GwsDCJi4tL9bieEGrUqOGyr0KFCuY57rbr169bUi59X+fXzZUrl1SsWFFeeukliY2NFX8yffp0U4+eOHr0qHTr1k0qV64ss2fPllmzZmV4+eCfxo4dK6tWrfJ1MRCEcvi6AICzpKQkGT9+vHz00UceHV+nTh15/fXXU+3XQMAq999/v4wbN87cvnHjhhw+fFhmzpwpGzZskCNHjkiePHnEXwKMokWLmsDBWZMmTeTatWsudaLZjOTkZJkyZYpUqVLFB6WFPwUYzz33nDz11FO+LgqCDAEG/IoGDHpFHRUVJaVLl77r8WXKlJFOnTplaJkKFCiQ6j00i9GnTx/55ptvpHnz5uLPsmXLZjJDzs6ePWt++kvTiK65qFmn3Llz+7oouIPExETJmzevr4uBAEETCfzKkCFD5Pbt2yaLkZH0Kv++++5z2de7d2+Tjdi6detdn1+yZEnzM0eOHB71f1i2bJmMGDHCBET58uUzV4wJCQkmY/Paa69J8eLFTXm6d+9u9jm7deuWjBo1yjRnhIaGmqYhrSfn43Tf//73P1N2e3OOvZ9Byj4Yeuzw4cPN7WLFipnH3n333bvW1alTp6Rly5bmBKPB38iRI01g4EyzIpMnT5YHH3zQBDUlSpSQf/zjH3Lx4kWX47QMTzzxhMkCNWjQwAQWH3/8cZplsGdbatasaV5Xy92qVSvZu3evV/V0p+a5n3766a59V+xNdd9//700bdrUfF80A7RixQrzuNZ/o0aNzOf505/+JF999ZXLa2o962ueOHHC1KsGeBrA6u/96tWr4onvvvvOfHZ9nr6/lkMD3fS8jx6jQcMnn3zi+N7YM2D219CM3d///ncpVKiQ/PWvf/Wqru2/5//85z/m4kF/d9WrV5fPPvvMcYx+r/R9Pvzww1SfdefOneaxf/3rXx7VDfwLAQb8imYGunTpYrIYv/76612Pv3nzppw/f95l8/QPtbM333xT5s+fLytXrjR/sJ1pwGN/7d9++02+/vprc4LWE0vjxo09en1tYtGT6eDBg6VHjx7mD6wGNHr7xx9/NH/Mn3nmGXOye++991ye27NnTxk2bJjUq1fP/BHW8unrvfDCC45j9KSuTTnaaVM7b+r29ttvuy2LHvv000+b2zNmzDDH6nvfidaBntQ0YJgwYYLUr1/f1IE9ULHTYGLQoEGmXjQg0BPaokWLTGCivytnx44dkw4dOpgMkB6rJ6C0vPjiiyYQK1u2rKkfrUc9WX377bde1ZMVNFjSk6YGEloXeoLV91i6dKn5+fjjj5sAWU/cGkhevnw51Wu0a9fO7Nfy6W39vWsAejf63dMmr0uXLpm61+aNP/74Qx599FHZvXu31++jv3st/8MPP+z43ujv0Nnzzz9v/k/pe/Xq1cvruj5+/Li0b99eWrdubY7RoFxfc+PGjebxSpUqme+Lfk9S0n0akP/tb3+7a93AD9kAPzB//ny9FLbt2bPHdvLkSVuOHDls/fr1czzetGlT24MPPujynPLly5vnpNyGDx9+1/fr2rWrLW/evOb2qFGjbNmzZ7etWLEi1XH6vu7eIzw83Hbq1Km7vs/mzZvN8TVq1LDduHHDsb9Dhw62kJAQW+vWrV2Oj4iIMJ/L7uDBg+b5PXv2dDnujTfeMPu//vprxz6tHy1vWmXQn3ZaR7rv3LlzHtWVHtu3b1/HvuTkZFubNm1suXLlcrzG9u3bzXGLFi1yef769etT7bf/7vSxu9HPqMc6fx+cy+FtPWkdOdeT/bt3+vTpu9ab/fuwePFix76jR4+afdmyZbN9++23jv0bNmww+/X1U9Z7jx49XN7r6aefthUpUuSO9aCf9YEHHrC1bNnS8bnV1atXbRUrVrQ1b948Xe+j/w/0d5yS/TX0u+rMm7q2/55Xrlzp2JeQkGArVaqUrW7duo59H3/8sTnuyJEjjn36/6Vo0aJuy4bAQAYDfkevaDp37mxGNmjG4E70KlKvhJw3zYB4aurUqTJ06FCJjo6WZ5991u0xmua1v/a///1vkwHQ5g29Ijt37pxH76Nl0uGgzuXW5gXNYKT8PDo6RVPQat26debnwIEDXY6zd2xdu3atZBbtc2KnaWu9r51e7c0Ay5cvN2l4zUg4Z5Q026FNLJs3b06VrdLMxt1oVknfL2W2xF6OzK4n/SzOV+raFKJNEOHh4eb3Z2e/rU0AKWn2yplmEH7//XeTmUjLwYMHTTZAmyv0WHv9aqbksccek23btpmmpHt9n7uV1du61uY0e8ZM5c+f3/x/OHDggMTHx5t9ml3RjJRzFkMzfvr5MrqPFTIOnTzhl9555x2TrtVUs6bP06KjJiIjI90+pie/CxcuuOzTtvvs2bOb25r2HTBggLmvf+zSon0OnN9Dmwq0LVr7Dmj5Jk6ceNfPU65cOZf7eiJWmvJPuV9PEhrAFClSRH7++WfTSTPlSA/tA6InNX08M2gZNPBzVrVqVfPT3ndBT35abu1P4o69Y6lzgOFMf1f6O7PTfgxaHydPnjQnqcKFC6dZvsysJ22Ksgc2dlpOd79LlbL/ibvvg/ZvsB+rJ2B3tH5V165d0yyb1r/9tdL7Piml/D15W9d6XMr6cv7u2J/Xtm1bWbx4senboTTY0D5L2vyDwESAAb+kJzO9ctEshra3p4d2EGvWrJnLvtOnT5uMhNIMggYveuIbM2aMuYry9I+ZXpXrCUSvGj1hD2o83Z+y82TKP9D+SAMjDS7ctaXbgztnKUeMaD8Q5w62eiL1dF6Pe6mntJ6j/U4y4nfp7bF29uzE+++/n2Z/lZQdl9PzPimlNbLH6u+kZjU0C6b/b7Uz75o1a+SVV14xwQwCEwEG/DqL8c9//jNVp0dP1a5d29GRLOXoD3tmom/fvuaqWTtdakfCQ4cOpfojnRY9AV25ckUyUvny5c2JRa9eNQVvd+bMGdO5Tx/PjCBEy6CpfvuVp9LOqcoesOmIAm0u0Q576Rluqpkg56t9+zBlfV1Nl2uGI60shjf1lJL9ql6Pc5ZZ2SFPaT0ozTyklbVLD2+/N97WtY5k0YDG+X1SfnfsmUENQjVA1eYlzTBqUykCF6Eh/Jb+QdUshg5ftLfVekNPHPqH2HlLOR+E0gmo5s6dKzExMWY0iSe0P4EGFxrEZCQdkaC034ezSZMmmZ9t2rRxCZhSniStNG3aNMdtPWHofe1Xou3/SjNAGnTZU9zOtE/J3cqmWSHn35UOZ1TaN0bfz90oC/uVuDf1lNaJ2zkbpZ/D32Y31frRsn7wwQduA1tP+wOl5O33xtu61tFgn3/+ueO+9v9YuHChycI4B/w6ukRHFemQbs1caRajVq1a6fpM8A9kMODXdKil9sXQIY06t0JGeeihh6R///7mj6YOoXNuWtF2bc2k2E+UWhYd3qlX6eltvvGUBjDaVKAnOz0J6HBAHY6o8xbozIvO5dQTkJZr9OjRpt1bmyusar/WwGz9+vWmLHp1qZ1dtTOfzn1gb/rQsukQRx2KqB0SW7RoYQIQvdLV1Lc2R+mwTW/pZ9QrWe2Qq6+lV7p6Bb19+3bzmHY29aaeUtLvlf7+dXI3e5ZkyZIljo62/kKbCubMmWM6F2uZdQiw9lHQqfU14NXMxhdffOH16+r3RjNPGiBo1kj7XDh3Vk3J27rWrJdmB/fs2WOGOc+bN89kO3RYuLtmEv096+dJb+YSfsTXw1iAlMNU0xom6W6Yqg6VTA/nYap2iYmJtkqVKpkhf1euXHE7TFWHlhYuXNj25JNP2vbt23fX97EPdVy+fLlHn9fd8NGbN2/aRowYYcqVM2dOW9myZW1RUVG269evuzw3Pj7e1Ee+fPnMa9iHYloxTFXrSocPt2jRwpYnTx5biRIlzGvcvn071fGzZs2y1a9f35Y7d25Tlpo1a9refPNN26+//pru392tW7ds77//vq1atWpmaGyxYsXMEF/n34Gn9ZRymKrSzxYZGWkLDQ01n23IkCG2jRs3uh2mmvJ7eKfPo89/9dVX71rvaQ2VdefAgQO2Z555xgw31fLqe7dr1862adOmdL2PDrNt0qSJ+X3pY/ZhoXf6jnha1/Z60SG7tWrVMuXV32HK/w/OtH51yO8vv/xy17qAfwvRf3wd5ADwXzqzo85UmdH9TRB8tI+Fznz65ZdfevycunXrmizSpk2bMrRsyHj0wQAA+AWd+l2b17yZywb+iz4YAACf+uGHH2Tfvn1mJFGpUqXM1OIIfGQwAAA+pU1w2mlV16vRhc3cjfZC4KEPBgAAsBwZDAAAYDkCDAAAYLks18lTJ+jRmeXy5csXEOs7AADgL7RXxeXLl82kbHdbJybLBRgaXKRc9RAAAHguNjbWrCx8J1kuwNDMhb1yPF2uGAAAiFlLRi/S7efSO8lyAYa9WUSDCwIMAAC850kXAzp5AgAAyxFgAAAAyxFgAAAAyxFgAAAAyxFgAAAAyxFgAAAAyxFgAAAAy2W5eTAABJ6YmBg5f/68+IOiRYtKuXLlfF0MwO8RYADw++CiWni4XLt6VfxB7jx55OiRIwQZwF0QYADwa5q50OCi3egZUrziAz4ty9nTx2XZOy+bMhFgAHdGgAEgIGhwUSa8tq+LAcBDdPIEAACWI8AAAACWI8AAAACWI8AAAACWI8AAAACWI8AAAACWI8AAAADBFWBs27ZN2rZtK6VLl5aQkBBZtWrVHY//7LPPpHnz5lKsWDHJnz+/REREyIYNGzKtvAAAIAACjMTERKldu7ZER0d7HJBogLFu3TrZt2+fNGvWzAQoBw4cyPCyAgCAAJnJs3Xr1mbz1OTJk13ujx07VlavXi1ffPGF1K1bNwNKCAAAstxU4cnJyXL58mUpXLhwmsckJSWZze7SpUuZVDoAALKugO7k+cEHH8iVK1ekXbt2aR4zbtw4KVCggGMrW7ZsppYRAICsKGADjMWLF8uIESNk2bJlUrx48TSPi4qKkoSEBMcWGxubqeUEACArCsgmkiVLlkjPnj1l+fLlEhkZecdjQ0NDzQYAADJPwGUw/vWvf0n37t3NzzZt2vi6OAAAwN8yGNp/4sSJE477p0+floMHD5pOm+XKlTPNG3FxcbJw4UJHs0jXrl1lypQp0qhRI4mPjzf7c+fObfpXAAAA/+DTDMbevXvN8FL7ENOBAwea28OGDTP3f/vtN4mJiXEcP2vWLLl165a8+uqrUqpUKcfWv39/n30GAADgZxmMRx55RGw2W5qPL1iwwOX+li1bMqFUAAAgy/XBAAAA/o8AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAAWI4AAwAABFeAsW3bNmnbtq2ULl1aQkJCZNWqVXd9zpYtW6RevXoSGhoqVapUkQULFmRKWQEAQIAEGImJiVK7dm2Jjo726PjTp09LmzZtpFmzZnLw4EF57bXXpGfPnrJhw4YMLysAAPBcDvGh1q1bm81TM2fOlIoVK8rEiRPN/fDwcNmxY4d8+OGH0rJlywwsKQAACNo+GLt27ZLIyEiXfRpY6P60JCUlyaVLl1w2AACQsQIqwIiPj5cSJUq47NP7GjRcu3bN7XPGjRsnBQoUcGxly5bNpNICAJB1BVSAkR5RUVGSkJDg2GJjY31dJAAAgp5P+2B4q2TJknLmzBmXfXo/f/78kjt3brfP0dEmugGZISYmRs6fP+/rYkjRokWlXLlyvi5GluQv3wHF9wC+FFABRkREhKxbt85l38aNG81+wB9OLNXCw+Xa1au+LorkzpNHjh45wsklC38HFN8DZNkA48qVK3LixAmXYag6/LRw4cLmP4Q2b8TFxcnChQvN471795Zp06bJm2++KT169JCvv/5ali1bJmvXrvXhpwD+j1616oml3egZUrziAz4rx9nTx2XZOy+b8nBiyZrfAcX3AFk6wNi7d6+Z08Ju4MCB5mfXrl3NBFq//fabuSKw0yGqGkwMGDBApkyZIvfff7/MmTOHIarwK3piKRNe29fFgA/xHQB8HGA88sgjYrPZ0nzc3Syd+pwDBw5kcMkAAMC9CPpRJAAAIPMRYAAAAMsRYAAAAMsRYAAAAN938tShpNu3b5eff/5Zrl69KsWKFZO6deuauSjCwsKsLyEAAAjeAGPRokVmaKgOLdX1P0qXLm1mz7xw4YKcPHnSBBcdO3aUt956S8qXL5+xpQYAAIEfYGiGIleuXNKtWzdZuXJlqgXDdMVSXdF0yZIl0qBBA5k+fbo8//zzGVVmAAAQDAHG+PHj7ziZla71ofNT6DZmzBj56aefrCwjAAAIxgDDm5kyixQpYjYAAJB1eT2KZP/+/XLo0CHH/dWrV8tTTz0lQ4YMkRs3blhdPgAAkBUCjH/84x/y448/mtunTp2SF154QfLkySPLly83i5ABAAB4HWBocFGnTh1zW4OKJk2ayOLFi826IdoBFAAAwOsAQxcnS05ONre/+uorefzxx81tHVmiywIDAAB4HWDoMNTRo0fLp59+Klu3bpU2bdo4JuDS+TEAAAC8DjA+/PBD09GzT58+8vbbb0uVKlXM/hUrVshf/vKXjCgjAAAI9qnCa9eu7TKKxO7999+XHDm8fjkAABCEvM5gVKpUSX7//fdU+69fvy5Vq1a1qlwAACArBRg6S+ft27dT7dfpwn/55RerygUAAAKYx20aa9ascdzesGGDFChQwHFfA45NmzZJxYoVrS8hAAAI3gBDZ+tUISEh0rVrV5fHcubMKRUqVJCJEydaX0IAABC8AYZ97gvNUuzZs0eKFi2akeUCAAABzOthHzrfBQAAwD0HGFOnTpWXXnpJwsLCzO076devnycvCQAAsnqAoZNrdezY0QQYejst2j/D2wAjOjrazKERHx9v5tj46KOPpGHDhmkeP3nyZJkxY4bExMSYZprnnntOxo0bZ8oGAAACKMBwbhaxsolk6dKlMnDgQJk5c6Y0atTIBA8tW7aUY8eOSfHixVMdr4uqDR48WObNm2dmDdWF17p162YCm0mTJllWLgAAkMnzYKRc+Ey39NKgoFevXtK9e3epXr26CTR06XcNINzZuXOnNG7cWP7+97+bUSstWrSQDh06yO7du+/hUwAAAL8IMObOnSs1atQwzRK66e05c+Z49Ro3btyQffv2SWRk5P8vTLZs5v6uXbvcPkezFvoce0Bx6tQpWbdunWNFV3d0ArBLly65bAAAwM9GkQwbNsxkHvr27SsRERFmnwYEAwYMMP0iRo4c6dHr6NLuOkFXyhVY9f7Ro0fdPkczF/q8v/71ryZzcuvWLendu7cMGTIkzffR/hkjRozw6jMCAIBMzmBoB8vZs2ebE/eTTz5pNr09a9YsmT59umSkLVu2yNixY8376Iqun332maxdu1ZGjRqV5nOioqIkISHBscXGxmZoGQEAQDoyGDdv3pQGDRqk2l+/fn2TUfCUjgDJnj27nDlzxmW/3i9ZsqTb5wwdOlQ6d+4sPXv2NPdr1qwpiYmJZgitLh2vTSwphYaGmg0AAPhxBkNP8JrFSEkzGDqU1VO5cuUyQYmuYeI8W6jetze9pHT16tVUQYQGKepeOpsCAAAfZDB0KKmdDgnVDp3/+c9/5KGHHjL7vvvuO9P/okuXLl69ub6urmuiGRGd+0KHqWpGQkeVKH29MmXKmCYY1bZtW9P/o27dumZY64kTJ0xWQ/fbAw0AABAgAcaBAwdc7mvmQZ08edLR3KHb//73P6/evH379nLu3DnTcVQn2qpTp46sX7/e0fFTgxbnjMU777xjAhz9GRcXJ8WKFTPBxZgxY7x6XwAA4AcBxubNmzOsAH369DFbWp06neXIkUOGDx9uNgAAEKQTbQEAAKQ7wNC5Jn755RePp/9etGiRR8cCAIAs3ESifR0efPBBM0239nnQTpmlS5c2s3hevHhRDh8+LDt27JAlS5aY/TqiBAAAZF0eBRg6kZX2k9DRIzrJlQYUzvLly2em+NbAolWrVhlVVgAAEGwTbenIDp3MSjfNWugIj2vXrpnRI5UrVzajOwAAANI1k6cqVKiQ2QAAANxhFAkAALAcAQYAALAcAQYAALAcAQYAAPB9gKHTdP/888/WlwQAAGTdAGP16tVmWOpjjz0mixcvlqSkpIwpGQAAyDoBxsGDB2XPnj1mZs/+/ftLyZIl5eWXXzb7AAAA0t0Ho27dujJ16lT59ddfZe7cuWadEp1GvFatWjJlyhRJSEigdgEAyMLuqZOnzWaTmzdvyo0bN8xtnXxr2rRpUrZsWbPoGQAAyJrSFWDs27fPrE1SqlQpGTBggMloHDlyRLZu3SrHjx+XMWPGSL9+/awvLQAACM4Ao2bNmvLQQw/J6dOnTfNIbGysjB8/XqpUqeI4pkOHDnLu3DmrywoAAIJ1LZJ27dpJjx49pEyZMmkeowugJScn32vZAABAVgkwhg4d6rit/S4UK6kCAIB77oOhTSM1atSQsLAws+ntOXPmpOelAABAEPI6gzFs2DCZNGmS9O3bVyIiIsy+Xbt2mc6eMTExMnLkyIwoJwAACOYAY8aMGTJ79mzTkdPuySefNHNgaNBBgAEAALxuItF5Lxo0aJBqf/369eXWrVtWlQsAAGSlAKNz584mi5HSrFmzpGPHjlaVCwAAZNVOnj179jSbzo2hzSbZsmWTgQMHOjZPREdHS4UKFUxn0UaNGsnu3bvvePwff/whr776qpnkKzQ0VKpWrSrr1q1Lz8cAAAD+0gfjhx9+kHr16pnbJ0+edMx7oZs+ZufJ0FWdTlwDkZkzZ5rgYvLkydKyZUs5duyYFC9ePNXxOiV58+bNzWMrVqwwc3Ho0vEFCxb09mMAAAB/CjA2b95s2ZvraJRevXpJ9+7dzX0NNNauXSvz5s2TwYMHpzpe91+4cEF27twpOXPmNPs0+wEAAIJosTNdRVW39NBshK5pEhkZ+f8Lky2bua/DXt1Zs2aNGRqrTSQlSpQwzTRjx46V27dvp/k+SUlJcunSJZcNAAD4WYChU4DrUNQCBQpI+fLlzaZNFKNGjfJqevDz58+bwEADBWd6Pz4+3u1zTp06ZZpG9Hna70JnFZ04caKMHj06zfcZN26cKat905VeAQCAnzWRvP3226aTpy5w1rhxY7Nvx44d8u6778r169fNSqoZRQMY7X+hI1ayZ89uhsbGxcXJ+++/L8OHD3f7nKioKJcOp5rBIMgAAMDPAoxPPvnETAuuk2vZ6SRb2uHylVde8TjA0E6hGiScOXPGZb/eL1mypNvn6MgR7Xuhz7MLDw83GQ9tcsmVK1eq5+hIE90AAIAfN5FoJ8tq1aql2q/79DFPaTCgGYhNmza5ZCj0vn0K8pQ0Y3LixAmXppgff/zRBB7uggsAABAgAUbt2rVl2rRpqfbrPn3MG9p0ofNnaFbkyJEj8vLLL0tiYqJjVEmXLl1ME4edPq5BTP/+/U1goSNOtJOndvoEAAAB3EQyYcIEadOmjXz11Vcui53FxsZ6PeFV+/bt5dy5c2YBNW3mqFOnjqxfv97R8VMXT9ORJXbad2LDhg1mYTV7s4wGG2+99Za3HwMAAPhTgNG0aVOTPdAZOI8ePWr2PfPMM6b/RenSpb0uQJ8+fczmzpYtW1Lt06Dm22+/9fp9AACAnwYYutBZq1atzIRYGTlaBAAABDav+mDoCI7vv/8+40oDAACyZifPTp06mXkwAAAALOuDcevWLbMmiHby1GGmefPmTbW+CAAAyNruaTVV7ewJAADgV6upAgCA4OR1H4wePXrI5cuXU+3XCbL0MQAAAK8DDJ1189q1a6n2676FCxdaVS4AAJAVmkh0FVKbzWY2zWCEhYU5HrMvn64rnQIAAHgcYBQsWFBCQkLMVrVq1VSP6/4RI0ZYXT4AABDMAYZ27tTsxaOPPiorV66UwoULOx7TlUzLly+frqnCAQBAFg4wdA0Sdfr0abPomPMiZAAAAPc0TFUzFX/88Yfs3r1bzp49K8nJyS6P6xLrAAAga/M6wPjiiy+kY8eOcuXKFcmfP7/pe2GntwkwAACA1+0cr7/+upnvQgMMzWRcvHjRsV24cCFjSgkAAII7wIiLi5N+/fpJnjx5MqZEAAAg6wUYLVu2lL1792ZMaQAAQNbsg9GmTRsZNGiQHD58WGrWrCk5c+Z0efzJJ5+0snwAACArBBi9evUyP0eOHJnqMe3kqbN6AgCArM3rACPlsFQAAICUmC0LAAD4LsB4/PHHJSEhwXF//PjxZpiq3e+//y7Vq1e3voQAACB4A4wNGzZIUlKS4/7YsWNd5r24deuWHDt2zPoSAgCA4A0wdKGzO92/F9HR0VKhQgWzBHyjRo3MNOSeWLJkielY+tRTT1lWFgAA4INOnlZbunSpDBw4UGbOnGmCi8mTJ5u5NjQbUrx48TSf99NPP8kbb7whDz/8cKaWFwgWMTExcv78eV8XQ4oWLSrlypXzdTEA+CrA0EyB87oj9n33atKkSWboa/fu3c19DTTWrl0r8+bNk8GDB7t9jg6F1fVQRowYIdu3b3fpCwLAs+CiWni4XLt61ddFkdx58sjRI0cIMoCsGmBok0i3bt0kNDTU3L9+/br07t1b8ubNa+4798/w1I0bN2Tfvn0SFRXl2KfLwEdGRsquXbvSfJ7OwaHZjRdffNEEGHei5XIu26VLl7wuJxBsNHOhwUW70TOkeMUHfFaOs6ePy7J3XjblIcAAsmiA0bVrV5f7nTp1SnWMtyup6h8VzUaUKFHCZb/eP3r0qNvn7NixQ+bOnSsHDx706D3GjRtnMh0AUtPgokx4bV8XA0BWDjDmz58vvnb58mXp3LmzzJ4927TbekKzI9rHwzmDUbZs2QwsJQAA8GknTw0SsmfPLmfOnHHZr/dLliyZ6viTJ0+azp1t27ZNNbNojhw5TMfQypUruzxHm3TszToAACALzOSZK1cuqV+/vmzatMklYND7ERERqY6vVq2aHDp0yDSP2DddXK1Zs2bmNpkJAAD8g8+HqWrzhfbvaNCggTRs2NAMU01MTHSMKtF+HWXKlDF9KXSejBo1arg8v2DBguZnyv0AACALBxjt27eXc+fOybBhwyQ+Pl7q1Kkj69evd3T81OF0OrIEAAAEDp8HGKpPnz5mc2fLli13fO6CBQsyqFQAACC9SA0AAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAIDgDDCio6OlQoUKEhYWJo0aNZLdu3eneezs2bPl4YcflkKFCpktMjLyjscDAIAsGGAsXbpUBg4cKMOHD5f9+/dL7dq1pWXLlnL27Fm3x2/ZskU6dOggmzdvll27dknZsmWlRYsWEhcXl+llBwAAfhpgTJo0SXr16iXdu3eX6tWry8yZMyVPnjwyb948t8cvWrRIXnnlFalTp45Uq1ZN5syZI8nJybJp06ZMLzsAAPDDAOPGjRuyb98+08zhKFC2bOa+Zic8cfXqVbl586YULlzY7eNJSUly6dIllw0AAARxgHH+/Hm5ffu2lChRwmW/3o+Pj/foNd566y0pXbq0S5DibNy4cVKgQAHHpk0qAAAgyJtI7sX48eNlyZIl8vnnn5sOou5ERUVJQkKCY4uNjc30cgIAkNXk8OWbFy1aVLJnzy5nzpxx2a/3S5YsecfnfvDBBybA+Oqrr6RWrVppHhcaGmo2AACQRTIYuXLlkvr167t00LR32IyIiEjzeRMmTJBRo0bJ+vXrpUGDBplUWgAAEBAZDKVDVLt27WoChYYNG8rkyZMlMTHRjCpRXbp0kTJlypi+FOq9996TYcOGyeLFi83cGfa+Gvfdd5/ZAACA7/k8wGjfvr2cO3fOBA0aLOjwU81M2Dt+xsTEmJEldjNmzDCjT5577jmX19F5NN59991MLz8AAPDDAEP16dPHbGlNrOXsp59+yqRSAQCALDmKBAAA+CcCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAYDkCDAAAEJwBRnR0tFSoUEHCwsKkUaNGsnv37jsev3z5cqlWrZo5vmbNmrJu3bpMKysAAAiAAGPp0qUycOBAGT58uOzfv19q164tLVu2lLNnz7o9fufOndKhQwd58cUX5cCBA/LUU0+Z7Ycffsj0sgMAAD8NMCZNmiS9evWS7t27S/Xq1WXmzJmSJ08emTdvntvjp0yZIq1atZJBgwZJeHi4jBo1SurVqyfTpk3L9LIDAAD3cogP3bhxQ/bt2ydRUVGOfdmyZZPIyEjZtWuX2+fofs14ONOMx6pVq9wen5SUZDa7hIQE8/PSpUtipfj4eLP5g5IlS5otEMobTGW9cuWK+Rl35Hu5cTVRfOXczycd5Unre05ZM6a8gVRWf/q/5cn/r0Aqqz+Vt6QHZfWG/btks9nufrDNh+Li4rSEtp07d7rsHzRokK1hw4Zun5MzZ07b4sWLXfZFR0fbihcv7vb44cOHm/dgY2NjY2NjE0u22NjYu57jfZrByAyaHXHOeCQnJ8uFCxekSJEiEhIS4tOyBTKNYsuWLSuxsbGSP39+XxcnaFCvGYN6zTjUbdaqV5vNJpcvX5bSpUvf9VifBhhFixaV7Nmzy5kzZ1z26/20Ujq635vjQ0NDzeasYMGC91x2/B/94vvTlz9YUK8Zg3rNONRt1qnXAgUK+H8nz1y5ckn9+vVl06ZNLhkGvR8REeH2Obrf+Xi1cePGNI8HAACZz+dNJNp80bVrV2nQoIE0bNhQJk+eLImJiWZUierSpYuUKVNGxo0bZ+73799fmjZtKhMnTpQ2bdrIkiVLZO/evTJr1iwffxIAAOA3AUb79u3l3LlzMmzYMNPjtk6dOrJ+/XopUaKEeTwmJsaMLLH7y1/+IosXL5Z33nlHhgwZIg888IAZQVKjRg0ffoqsR5uddO6SlM1PuDfUa8agXjMOdZsxQoOgXkO0p6evCwEAAIKLzyfaAgAAwYcAAwAAWI4AAwAAWI4AAwAAWI4AAx7TocJ//vOfJV++fFK8eHGziu2xY8d8XaygM378eDPL7GuvvebrogSFuLg46dSpk5m9N3fu3FKzZk0ztB3pd/v2bRk6dKhUrFjR1GnlypXNwpOMGfDetm3bpG3btmZmTP1/n3JdLa1THWVZqlQpU9e6Vtfx48clEBBgwGNbt26VV199Vb799lszudnNmzelRYsWZt4SWGPPnj3y8ccfS61atXxdlKBw8eJFady4seTMmVP+/e9/y+HDh80cOoUKFfJ10QLae++9JzNmzDCrWB85csTcnzBhgnz00Ue+LlrASUxMlNq1a0t0dLTbx7Vep06dalYa/+677yRv3rxmgc/r16+Lv2OYKtJN5y/RTIYGHk2aNPF1cQKernpZr149mT59uowePdrMCaMTzyH9Bg8eLN98841s377d10UJKk888YSZq2ju3LmOfc8++6y5wv7nP//p07IFspCQEPn8889Ndljp6VkzG6+//rq88cYbjhXBte4XLFggL7zwgvgzMhhIN/2iq8KFC/u6KEFBs0M6O62mQGGNNWvWmFmCn3/+eRMM161bV2bPnu3rYgU8nfBQl2z48ccfzf3//ve/smPHDmndurWvixZUTp8+bSagdP6boOuANGrUSHbt2iX+zuczeSIw6Zox2kdA08/MonrvdMr7/fv3myYSWOfUqVMmla9LEujMv1q//fr1M+sg6RIFSH9mSFf7rFatmlmwUvtkjBkzRjp27OjrogWV+Ph489M+s7Wd3rc/5s8IMJDuq+0ffvjBXLXg3uhyzLrGjvZrCQsL83Vxgi4Q1gzG2LFjzX3NYOj3VtuzCTDSb9myZbJo0SKzbMODDz4oBw8eNBccms6nXmFHEwm81qdPH/nyyy9l8+bNcv/99/u6OAFv3759cvbsWdP/IkeOHGbTfi3asUtv69Uh0kd73levXt1lX3h4uFnjCOk3aNAgk8XQPgA6Kqdz584yYMAAx6KUsEbJkiXNzzNnzrjs1/v2x/wZAQY8ph2ONLjQTkhff/21GaKGe/fYY4/JoUOHzFWgfdOrbk03621NQSN9tAkv5VBq7TdQvnx5n5UpGFy9etVlEUql31PNGME6FStWNIGE9nex06YpHU0SEREh/o4mEnjVLKIp0dWrV5u5MOxtgNrpSHuPI320LlP2Y9GhaDpvA/1b7o1eVWuHRG0iadeunezevVtmzZplNqSfztugfS7KlStnmkgOHDggkyZNkh49evi6aAE5euzEiRMuHTv1wkI7z2v9atOTjirTlcM14ND5R7Qpyj7SxK/pMFXAE/p1cbfNnz/f10ULOk2bNrX179/f18UICl988YWtRo0attDQUFu1atVss2bN8nWRAt6lS5fM97NcuXK2sLAwW6VKlWxvv/22LSkpyddFCzibN292+3e1a9eu5vHk5GTb0KFDbSVKlDDf4ccee8x27NgxWyBgHgwAAGA5+mAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAAAADLEWAASGXLli0SEhIif/zxxx2Pq1ChgkyePDlDy7JgwQIpWLCgBJKU9aLT6jdv3txMAR9onwVILwIMIEB169bNBAG65cqVS6pUqSIjR46UW7du3fNr6/odv/32m1ln5k4n+T179shLL70kGal9+/ZmgTJ/5Gm9fPjhh6Y+dY0Jf/0sgNVY7AwIYK1atZL58+dLUlKSrFu3zixIlzNnTomKirqn19WAxZPloIsVKyYZTRfSC7TF9FLWy8mTJ6V+/fpmwSogqyCDAQSw0NBQEwjo8uMvv/yyREZGypo1a8xjFy9elC5dukihQoUkT5480rp1azl+/LjjuT///LNZFVMf19S9roqpQUrKJhK93b17d0lISHBkTN599123TQExMTHyt7/9Te677z7Jnz+/WcH0zJkzjsf1eXXq1JFPP/3UPFczJC+88IJcvnzZ4yzBvbzGl19+KX/6059MfTz33HNm2fFPPvnEvI7WQ79+/eT27duO592pDj2tF729cuVKWbhwoTlGM09AVkCAAQQRvdK/ceOGua0nsr1795qAY9euXbpysjz++ONy8+ZN87hmOzTzsW3bNjl06JC89957JjBw11yiJ0sNGDTNr9sbb7yR6rjk5GQTXFy4cEG2bt0qGzdulFOnTpkmjpRX86tWrTIne9302PHjx3v1OdPzGhpMTJ06VZYsWSLr1683AcLTTz9tgirdNGD5+OOPZcWKFY7n3KkOPa0XbS7RTJMGW3rMlClTvPqsQKCiiQQIAnri27Rpk2zYsEH69u1rrrL1pPjNN9+YE6FatGiRlC1b1pyYn3/+eZNtePbZZ6VmzZrm8UqVKqXZXKJZAr36vlOzib6/BiqnT58276P0ql0zI3qS/fOf/+wIRDSjkC9fPnO/c+fO5rljxozx+POm5zU0KJgxY4ZUrlzZ3NcMhgYVmmHRwKp69erSrFkz2bx5swmKPKlDT+pFm0s006TBnyfNTkCwIIMBBDC9eteTY1hYmEnf64lR0/RHjhyRHDlySKNGjRzHFilSxDQP6GNKmwNGjx4tjRs3luHDh8v3339/T2XR19WTrz24UHrS1qYJ+3vamwzsgYEqVaqUnD171qv3Ss9raBOHPbhQJUqUMK/jnLXRffbX8aQOAaSNAAMIYHrFrSMT9Gr72rVrpj+B9qfwRM+ePU0Thl79a+ahQYMG8tFHH2V4mbUTqjPNAGhGIqNfw91zrCgLAPcIMIAApsGEDk8tV66cudq2Cw8PN8NVv/vuO8e+33//XY4dO2ayCnaabejdu7d89tln8vrrr8vs2bPTbCZx7vzojr5nbGys2ewOHz5sOoo6v2eg8KQOPakXIKsiwACCkA6H1A6XvXr1kh07dsh///tf6dSpk5QpU8bsV6+99prps6F9Jvbv32/6HuhJ1R1tSrhy5Yrp53D+/HnTYTIlHcGi/Tk6duxoXm/37t1mBEbTpk1NdiQY69CTegGyKgIMIEjp/Bg698ITTzwhERERpiOojpawNwvolbeOJNGgQkc5VK1aVaZPn+72tbSTo2Y6tI+HdlqcMGFCqmO0eWH16tVmSGeTJk1MwKEdR5cuXSrBWoee1AuQVYXY9H8MAACAhchgAAAAyxFgAAAAyxFgAAAAyxFgAAAAyxFgAAAAyxFgAAAAyxFgAAAAyxFgAAAAyxFgAAAAyxFgAAAAyxFgAAAAsdr/A6ITO+qvYmf1AAAAAElFTkSuQmCC",
+      "text/plain": [
+       "<Figure size 600x300 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "\n",
+    "plt.figure(figsize=(6,3))\n",
+    "plt.bar(df[\"position\"], df[\"H\"], color=\"skyblue\", edgecolor=\"black\")\n",
+    "plt.xlabel(\"Position in motif\")\n",
+    "plt.ylabel(\"Entropy (bits)\")\n",
+    "plt.title(\"NF-κB motif per-column entropy\")\n",
+    "plt.show()\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "15a0e09b-9645-4887-be53-89d30d688059",
+   "metadata": {},
+   "source": [
+    "**Figure 1. NF-κB motif per-column entropy.**  \n",
+    "Bars show information content across 12 example binding sites. Lower entropy values (near 0) correspond to highly conserved positions, while higher entropy indicates variable bases. This highlights conserved “GGG” at the start and “CC” at the end, consistent with the NF-κB consensus motif (GGGRNNYYCC).\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cd94f11f-0621-47fb-ad5c-b0e8ec494b38",
+   "metadata": {},
+   "source": [
+    "# Motif Entropy Analysis: NF-κB Example\n",
+    "\n",
+    "This notebook shows a complete, reproducible workflow:\n",
+    "1. **Data loading** — read FASTA sequences\n",
+    "2. **Validation** — check sequence length, alphabet, and formatting\n",
+    "3. **Computation** — calculate total motif entropy and per-column entropy\n",
+    "4. **Visualization** — plot per-column entropy and add a short caption\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9b2765d5-b11f-4a16-9b2f-d9c42acca496",
+   "metadata": {},
+   "source": [
+    "## 1. Data Loading\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1f5d2dba-5989-4033-ad8b-46607e9c6792",
+   "metadata": {},
+   "source": [
+    "## 2. Dataset Validation\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2828282b-c03f-4f0a-ae04-487a44f44c44",
+   "metadata": {},
+   "source": [
+    "## 3. Computation\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "f7b0e645-19da-4be3-b5a8-d27b3666be2d",
+   "metadata": {},
+   "source": [
+    "## 4. Visualization\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "b0271bc3-e3ae-4772-8b61-4d4b68b600aa",
+   "metadata": {},
+   "source": [
+    "## 5. Challenges and Fixes\n",
+    "\n",
+    "During development, several issues came up:\n",
+    "\n",
+    "- **IndentationError**: The first attempt at writing `motif_entropy.py` had hidden spaces at the top of the file.  \n",
+    "  *Fix*: Rewrote the file carefully in Notepad with no extra spaces at line 1.\n",
+    "\n",
+    "- **FASTA not loading (0.0 entropy)**: At one point the script returned `0.0`.  \n",
+    "  *Fix*: This revealed the parser only loaded 1 sequence because the FASTA was malformed. Rebuilt the FASTA with proper headers (`>seqX`) for each line.\n",
+    "\n",
+    "- **Notebook variables lost after restart**: When re-opening Jupyter, variables like `DATA` and `seqs` were missing.  \n",
+    "  *Fix*: Re-ran the path setup and FASTA-loading cells in order. Added clear section headers so re-runs are straightforward.\n",
+    "\n",
+    "- **Save error (“Failed to fetch”)**: Jupyter initially could not save the notebook.  \n",
+    "  *Fix*: Restarted Jupyter cleanly from Anaconda Prompt, which resolved the issue.\n",
+    "\n",
+    "These challenges document a realistic debugging process and show how reproducibility and structure help overcome common errors.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6f2675e5-0fbd-400d-9fe4-b6f3f9c7c930",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python (motif-entropy)",
+   "language": "python",
+   "name": "motif-entropy"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
