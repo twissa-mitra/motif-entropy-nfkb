@@ -1,0 +1,3 @@
+Total columns: 8
+Total entropy (bits): 9.694032
+Total information (bits): 6.305968
