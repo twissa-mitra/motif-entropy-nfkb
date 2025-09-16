@@ -74,6 +74,20 @@ These metrics confirm the expected NF-κB consensus, where the flanking regions 
 
 ---
 
+## What I Learned
+
+This project strengthened my ability to connect computational methods with biological interpretation in a reproducible research setting. Specifically, I developed:
+
+- **Data handling and validation skills** by implementing robust FASTA parsing and ensuring alignment quality across sequences.  
+- **Statistical modeling expertise** through construction of position probability matrices (PPMs) with pseudocounts and application of entropy-based metrics.  
+- **Quantitative reasoning** by translating information-theoretic principles into interpretable measures of motif conservation.  
+- **Reproducible workflow design** using Jupyter notebooks, clear sectioning, and structured outputs (tables, figures, summaries).  
+- **Visualization skills** by generating publication-ready plots and sequence logos that highlight conserved and variable regions of motifs.  
+
+Beyond the technical implementation, this project reinforced the importance of **clarity, reproducibility, and interpretability** in computational biology research. It demonstrated how relatively simple models, when carefully validated and visualized, can provide meaningful biological insight into regulatory sequence motifs.
+
+---
+
 ### Visual Outputs
 
 **Per-column information bar chart**  
