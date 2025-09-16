@@ -6,7 +6,23 @@ It demonstrates how entropy reflects column-wise conservation in sequence motifs
 ---
 
 ## Problem
-Transcription factors like NF-κB bind DNA at conserved sequence motifs. To quantify conservation, we can calculate **entropy per column** of a motif’s position probability matrix (PPM). Low entropy indicates strong conservation; high entropy indicates variability.
+
+Transcription factors such as NF-κB regulate gene expression by binding to specific DNA motifs. These binding sites are typically short (8–12 bp) and contain a mixture of highly conserved and variable positions.  
+
+Accurately quantifying motif conservation is critical for understanding:  
+- **DNA–protein interactions** — which bases are essential for recognition versus those that tolerate substitutions.  
+- **Regulatory logic** — how sequence variation influences binding strength and downstream gene regulation.  
+- **Comparative genomics** — distinguishing true binding sites from background sequence.  
+
+Traditional consensus sequences (e.g., `GGGRNNYYCC` for NF-κB) provide a qualitative description but fail to capture positional variability. **Entropy-based scoring** offers a principled, quantitative alternative. By measuring the uncertainty at each motif position, entropy reveals which sites are strongly constrained and which allow flexibility.  
+
+The goal of this project is to implement an **entropy-based framework for motif analysis** that:  
+1. Reads aligned sequences (FASTA).  
+2. Constructs position probability matrices (PPMs).  
+3. Computes per-column entropy and information content.  
+4. Visualizes results using bar plots and sequence logos.  
+
+This approach produces interpretable metrics and figures that connect raw sequence data to biological insight about conservation within transcription factor motifs.
 
 ---
 
