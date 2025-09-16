@@ -46,4 +46,15 @@ Example plots (see `docs/figs/`):
 conda activate motif-entropy
 jupyter notebook notebooks/01_motif_entropy_demo.ipynb
 
+run_entropy.bat
+
+motif-entropy-nfkb/
+│
+├── data/          # Example FASTA input
+├── notebooks/     # Main Jupyter workflow
+├── results/       # CSV outputs + summary
+├── docs/figs/     # Saved figures for README/paper
+└── src/           # Python scripts (optional)
+
+
 
