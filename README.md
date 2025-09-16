@@ -26,16 +26,23 @@ Transcription factors like NF-κB bind DNA at conserved sequence motifs. To quan
 ---
 
 ## Results
-- **Real NF-κB dataset (12 sequences, length 10)**  
-  - Total entropy: ~11.86 bits  
-  - Total information: ~8.14 bits  
+
+Using the **real NF-κB dataset** (12 sequences, length 10):
+
+- **Total entropy**: ~11.86 bits  
+- **Total information**: ~8.14 bits  
 - **Conserved positions** (1–3, 8–10) show low entropy (~1.0) and high information (~1.0).  
 - **Variable positions** (4–7) have higher entropy (~1.5–1.6).  
 
-Example plots (see `docs/figs/`):  
+Example outputs:
+
 - Per-column information bar chart  
 - Frequency sequence logo  
 - Information-weighted sequence logo  
+
+### Information-weighted sequence logo
+
+![NF-κB information-weighted logo](docs/figs/nfkb_logo_info_real.png)
 
 ---
 
