@@ -18,17 +18,31 @@ Compute the entropy of an NF-κB motif from a small DNA set and show how entropy
 
 Given short NF-κB sites (consensus ~ GGGRNNYYCC), we compute motif entropy as the sum of per-column entropies:
 
+
+
 \\\[
 
 H = \\sum\_{i=1}^{L} \\left( -\\sum\_{b \\in \\{A,C,G,T\\}} p\_{i,b}\\log\_2 p\_{i,b} \\right)
 
 \\]
 
+
+
 Lower entropy → more conservation.
 
 
 
-\## Quick start (Windows/Conda)
+\## Quick start (Windows)
+
+
+
+\### Option 1 — One-click run  
+
+Double-click `run\_entropy.bat` (or run it from a terminal). It will use the `motif-entropy` conda environment and print the total motif entropy.  
+
+
+
+\### Option 2 — Manual run with Conda  
 
 ```bat
 
