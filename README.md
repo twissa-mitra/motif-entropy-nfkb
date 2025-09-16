@@ -11,17 +11,37 @@ Transcription factors like NF-κB bind DNA at conserved sequence motifs. To quan
 ---
 
 ## Methods
-1. **Data loading** – Input aligned sequences from FASTA.  
-2. **PPM construction** – Compute base frequencies with pseudocounts.  
-3. **Entropy & information content** –  
+
+Our workflow was designed to be fully reproducible and transparent. Each step moves from raw DNA sequences to interpretable measures of motif conservation:
+
+1. **Data Loading**  
+   NF-κB binding site sequences were provided in FASTA format (`data/nfkb_example.fasta`). A parser was implemented to handle sequence headers, validate characters (A, C, G, T), and ensure equal sequence lengths.
+
+2. **Dataset Validation**  
+   Quality checks confirmed that all sequences were aligned and consistent in length. Any invalid characters or malformed entries would raise errors early in the workflow.
+
+3. **PPM Construction**  
+   A **position probability matrix (PPM)** was built by counting nucleotides at each column, adding pseudocounts (α = 1) to avoid zeros, and normalizing by column totals.
+
+4. **Entropy and Information Content**  
+   For each position, per-column entropy was calculated:  
    \[
    H_i = - \sum_{b \in \{A,C,G,T\}} p_{i,b}\,\log_2 p_{i,b}
    \]  
+   Information content was then derived relative to a uniform background (2 bits):  
    \[
-   I_i = H_{bg} - H_i,\quad H_{bg}=2 \text{ bits}
-   \]  
-4. **Visualization** – Plot per-column information bars, sequence logos (frequency-scaled and information-weighted).  
-5. **Results export** – Save per-position metrics, counts, PPM, and figures to `results/` and `figs/`.
+   I_i = H_{bg} - H_i
+   \]
+
+5. **Visualization**  
+   - Bar plots of per-column information (matplotlib).  
+   - Sequence logos using `logomaker`: both **frequency-scaled** and **information-weighted**.  
+   These figures highlight conserved vs. variable regions.
+
+6. **Results Export**  
+   All intermediate tables (counts, PPM, per-position metrics) and summary statistics were saved to `results/`, with publication-ready figures written to `docs/figs/`.
+
+This structured pipeline links sequence-level data to interpretable entropy and conservation measures, with clear outputs for downstream use or inclusion in publications.
 
 ---
 
