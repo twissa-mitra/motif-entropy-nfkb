@@ -3,8 +3,6 @@
 Compute the entropy of an NF-κB motif from a small DNA set and show how entropy reflects column-wise conservation.
 
 ## Project goals
-## Project goals
-
 - Formalize the NF-κB motif as a position probability matrix (PPM) by estimating per-position nucleotide frequencies from the input sequences.  
 - Compute per-column entropy  
   \[
