@@ -34,15 +34,16 @@ Using the **real NF-κB dataset** (12 sequences, length 10):
 - **Conserved positions** (1–3, 8–10) show low entropy (~1.0) and high information (~1.0).  
 - **Variable positions** (4–7) have higher entropy (~1.5–1.6).  
 
-Example outputs:
+### Example Outputs
 
-- Per-column information bar chart  
-- Frequency sequence logo  
-- Information-weighted sequence logo  
+**Per-column information bar chart**  
+![NF-κB motif information bar](docs/figs/nfkb_info_bar_real.png)
 
-### Information-weighted sequence logo
+**Frequency sequence logo**  
+![NF-κB motif frequency logo](docs/figs/nfkb_logo_freq_real.png)
 
-![NF-κB information-weighted logo](docs/figs/nfkb_logo_info_real.png)
+**Information-weighted sequence logo**  
+![NF-κB motif information-weighted logo](docs/figs/nfkb_logo_info_real.png)
 
 ---
 
