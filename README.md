@@ -37,6 +37,10 @@ H = \sum_{i=1}^{L} \left( -\sum_{b \in \{A,C,G,T\}} p_{i,b}\log_2 p_{i,b} \right
 Lower entropy → more conservation.
 
 ---
+### Key figures
+![Entropy by position](docs/figs/entropy_by_position.png)
+![PPM logo (freq)](docs/figs/ppm_logo_freq.png)
+![PPM logo (info-weighted)](docs/figs/ppm_logo_info.png)
 
 ## Quick start (Windows)
 
